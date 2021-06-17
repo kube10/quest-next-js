@@ -1,68 +1,82 @@
 import Head from "next/head";
+import axios from "axios";
 import styles from "../styles/Home.module.css";
 import TestComponent from "../common/components/TestComponent";
 
-export default function Home() {
+export default function Home({ estates }) {
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <TestComponent />
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
     </div>
   );
 }
+
+export const getServerSideProps = async () => {
+  const url = `${process.env.WHISE_BASE_URL}/token`;
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  const body = {
+    username: process.env.WHISE_USER,
+    password: process.env.WHISE_PASS,
+  };
+
+  try {
+    const resp = await axios.post(url, body, {
+      headers: headers,
+    });
+
+    if (resp && resp.data && resp.data.token) {
+      const url = `${process.env.WHISE_BASE_URL}/admin/clients/token`;
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resp.data.token}`,
+      };
+      const body = {
+        ClientId: 6980,
+        OfficeId: 9159,
+      };
+      try {
+        const response = await axios.post(url, body, {
+          headers: headers,
+        });
+
+        if (response && response.data && response.data.token) {
+          const clientToken = response.data.token;
+
+          let url = `${process.env.WHISE_BASE_URL}/v1/estates/list`;
+          let headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${clientToken}`,
+          };
+          let body = {
+            Page: {
+              Limit: 5,
+              Offset: 0,
+            },
+          };
+
+          try {
+            let estatesRes = await axios.post(url, body, {
+              headers: headers,
+            });
+
+            if (estatesRes && estatesRes.data && estatesRes.data.estates) {
+              return {
+                props: {
+                  estates: estatesRes.data.estates,
+                },
+              };
+            }
+          } catch (e) {
+            console.log(e.message);
+          }
+        }
+      } catch (e) {
+        console.log(e.message);
+      }
+    }
+  } catch (e) {
+    console.log(e.message);
+  }
+};

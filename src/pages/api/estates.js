@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseURL = "https://api.whise.eu/";
 const user = "nemo@bonfirestudio.be";
-const pass = "";
+const pass = "brugsezotten12";
 const clientId = 6980;
 const officeId = 9159;
 
@@ -52,7 +52,7 @@ async function getClientToken() {
   }
 }
 
-async function getEstates() {
+export default async function handler(req, res) {
   let url = baseURL + "v1/estates/list";
   let headers = {
     "Content-Type": "application/json",
@@ -71,16 +71,9 @@ async function getEstates() {
     });
 
     if (resp && resp.data && resp.data.estates) {
-      for (let estate of resp.data.estates) {
-        if (!estate) {
-          continue;
-        }
-        console.log(estate.id, " - ", estate.name, "\n");
-      }
+      res.status(200).send(resp.data.estates);
     }
   } catch (e) {
     console.log(e);
   }
 }
-
-export default getEstates;
