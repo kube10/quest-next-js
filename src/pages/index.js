@@ -1,6 +1,5 @@
 import styles from "../styles/Home.module.css";
 import Estates from "../common/components/Estates";
-import Cookies from "cookies";
 import fetchTokens from "../common/util/fetchTokens";
 
 //Import token calls
