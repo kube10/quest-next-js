@@ -45,6 +45,7 @@ export const getServerSideProps = async () => {
 
         if (response && response.data && response.data.token) {
           const clientToken = response.data.token;
+          console.log(clientToken);
 
           let url = `https://api.whise.eu/v1/estates/list`;
           let headers = {
