@@ -18,15 +18,24 @@ export const getServerSideProps = async () => {
   const data = await res.json();
   const token = data.token;
 
-  console.log(`token sent: ${token}`);
-
   const clientTokenRes = await fetch("http://localhost:3010/api/clientToken", {
     headers: {
       token: token,
     },
   });
   const clientTokenData = await clientTokenRes.json();
-  const clientToken = data.clientToken;
+  const clientToken = clientTokenData.clientToken;
+
+  const estatesRes = await fetch("http://localhost:3010/api/estates", {
+    header: {
+      clientToken: clientToken,
+    },
+  });
+  console.log(estatesRes);
+
+  // const estatesData = await estatesRes.json();
+  // const estates = estatesData.estates;
+  // console.log(estates);
 
   return {
     props: {

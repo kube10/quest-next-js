@@ -6,7 +6,6 @@ export default async function handler(req, res) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${req.headers.token}`,
   };
-  console.log(`Token received in header: ${req.headers.token}`);
   const body = {
     ClientId: 6980,
     OfficeId: 9159,
@@ -15,8 +14,6 @@ export default async function handler(req, res) {
     const resp = await axios.post(url, body, {
       headers: headers,
     });
-    console.log(`Clienttoken response`);
-    console.log(resp);
     const data = {
       clientToken: resp.data.token,
     };
