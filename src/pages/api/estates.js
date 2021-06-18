@@ -1,10 +1,10 @@
 import axios from "axios";
 
 export default async function handler(req, res) {
-  const url = `https://api.whise.eu/v1/estates/list`;
+  const url = `${process.env.WHISE_BASE_URL}/v1/estates/list`;
   const headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${req.headers.clientToken}`,
+    Authorization: `Bearer ${req.headers.client}`,
   };
   const body = {
     Page: {

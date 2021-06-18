@@ -14,60 +14,42 @@ export default function Home({ estates, errors }) {
 }
 
 export const getServerSideProps = async () => {
-  const res = await fetch("http://localhost:3010/api/token");
-  const data = await res.json();
-  const token = data.token;
+  try {
+    const res = await fetch(`${process.env.API_BASE_URL}/api/token`);
+    const data = await res.json();
+    const token = data.token;
 
-  const clientTokenRes = await fetch("http://localhost:3010/api/clientToken", {
-    headers: {
-      token: token,
-    },
-  });
-  const clientTokenData = await clientTokenRes.json();
-  const clientToken = clientTokenData.clientToken;
-  console.log(`clientToken: ${clientToken}`);
+    const clientTokenRes = await fetch(
+      `${process.env.API_BASE_URL}/api/clientToken`,
+      {
+        headers: {
+          token: token,
+        },
+      }
+    );
+    const clientTokenData = await clientTokenRes.json();
+    const clientToken = clientTokenData.clientToken;
 
-  const estatesRes = await fetch("http://localhost:3010/api/estates", {
-    headers: {
-      clientToken: clientToken,
-    },
-  });
-  const estatesData = await estatesRes.json();
-  const estates = estatesData.error;
-  console.log(estates);
+    const estatesRes = await fetch(`${process.env.API_BASE_URL}/api/estates`, {
+      headers: {
+        client: clientToken,
+      },
+    });
+    const estatesData = await estatesRes.json();
+    const estates = estatesData.estates;
 
-  // const estatesData = await estatesRes.json();
-  // const estates = estatesData.estates;
-  // console.log(estates);
-
-  return {
-    props: {
-      estates: null,
-      errors: `Estates not fetched with error`,
-    },
-  };
-
-  // try {
-  //   const estates = await fetch("http://localhost:3010/api/estates", {
-  //     headers: {
-  //       clientToken,
-  //     },
-  //   });
-  //
-  //   console.log(estates);
-  //
-  //   return {
-  //     props: {
-  //       estates,
-  //       errors: null,
-  //     },
-  //   };
-  // } catch (err) {
-  //   return {
-  //     props: {
-  //       estates: null,
-  //       errors: `Estates not fetched with error: ${err.message}`,
-  //     },
-  //   };
-  // }
+    return {
+      props: {
+        estates: estates,
+        errors: null,
+      },
+    };
+  } catch (err) {
+    return {
+      props: {
+        estates: [],
+        errors: `An error occured: ${err.message}`,
+      },
+    };
+  }
 };

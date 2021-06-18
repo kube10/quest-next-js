@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default async function handler(req, res) {
-  const url = `https://api.whise.eu/token`;
+  const url = `${process.env.WHISE_BASE_URL}/token`;
   const headers = {
     "Content-Type": "application/json",
   };

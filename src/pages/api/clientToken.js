@@ -1,14 +1,14 @@
 import axios from "axios";
 
 export default async function handler(req, res) {
-  const url = `https://api.whise.eu/v1/admin/clients/token`;
+  const url = `${process.env.WHISE_BASE_URL}/v1/admin/clients/token`;
   const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${req.headers.token}`,
   };
   const body = {
-    ClientId: 6980,
-    OfficeId: 9159,
+    ClientId: parseInt(process.env.WHISE_CLIENT_ID),
+    OfficeId: parseInt(process.env.WHISE_OFFICE_ID),
   };
   try {
     const resp = await axios.post(url, body, {
