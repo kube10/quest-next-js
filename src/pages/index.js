@@ -3,7 +3,7 @@ import axios from "axios";
 import styles from "../styles/Home.module.css";
 import TestComponent from "../common/components/TestComponent";
 
-export default function Home({ estates }) {
+export default function Home({ estates, errors }) {
   return (
     <div className={styles.container}>
       <TestComponent />
@@ -65,6 +65,7 @@ export const getServerSideProps = async () => {
               return {
                 props: {
                   estates: estatesRes.data.estates,
+                  errors: null,
                 },
               };
             }
@@ -73,6 +74,7 @@ export const getServerSideProps = async () => {
             return {
               props: {
                 estates: [],
+                errors: `Estates error: ${e.message}`,
               },
             };
           }
@@ -82,6 +84,7 @@ export const getServerSideProps = async () => {
         return {
           props: {
             estates: [],
+            errors: `Client token error: ${e.message}`,
           },
         };
       }
@@ -91,6 +94,7 @@ export const getServerSideProps = async () => {
     return {
       props: {
         estates: [],
+        errors: `Token error: ${e.message}`,
       },
     };
   }
