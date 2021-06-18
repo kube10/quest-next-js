@@ -1,9 +1,7 @@
-import Head from "next/head";
-import axios from "axios";
 import styles from "../styles/Home.module.css";
 import Estates from "../common/components/Estates";
 
-//Single estate branch
+//Cookies branch
 
 export default function Home({ estates, errors }) {
   return (
@@ -34,7 +32,6 @@ export const getServerSideProps = async () => {
       headers: {
         client: clientToken,
       },
-      method: "POST",
     });
     const estatesData = await estatesRes.json();
     const estates = estatesData.estates;
