@@ -3,7 +3,7 @@ import axios from "axios";
 import styles from "../styles/Home.module.css";
 import Estates from "../common/components/Estates";
 
-//Master branch
+//Single estate branch
 
 export default function Home({ estates, errors }) {
   return (
