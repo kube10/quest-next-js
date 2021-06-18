@@ -16,12 +16,14 @@ export default async function handler(req, res) {
     const resp = await axios.post(url, body, {
       headers: headers,
     });
-    console.log(resp);
     const data = {
       estates: resp.data.estates,
     };
     res.status(200).send(data);
   } catch (err) {
-    res.status(500).send(err.message);
+    const error = {
+      error: err.message,
+    };
+    res.status(500).send(error);
   }
 }

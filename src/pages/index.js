@@ -25,13 +25,16 @@ export const getServerSideProps = async () => {
   });
   const clientTokenData = await clientTokenRes.json();
   const clientToken = clientTokenData.clientToken;
+  console.log(`clientToken: ${clientToken}`);
 
   const estatesRes = await fetch("http://localhost:3010/api/estates", {
-    header: {
+    headers: {
       clientToken: clientToken,
     },
   });
-  console.log(estatesRes);
+  const estatesData = await estatesRes.json();
+  const estates = estatesData.error;
+  console.log(estates);
 
   // const estatesData = await estatesRes.json();
   // const estates = estatesData.estates;
