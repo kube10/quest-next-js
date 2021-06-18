@@ -39,6 +39,7 @@ export const getServerSideProps = async ({ req, res }) => {
       });
     } else {
       clientToken = cookies.get("client");
+      console.log(`token from cookie: ${clientToken}`);
     }
 
     const estatesRes = await fetch(`${process.env.API_BASE_URL}/api/estates`, {

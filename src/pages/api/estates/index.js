@@ -7,12 +7,7 @@ export default async function handler(req, res) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${req.headers.client}`,
   };
-  const body = {
-    Page: {
-      Limit: 5,
-      Offset: 0,
-    },
-  };
+  const body = {};
   try {
     const resp = await axios.post(url, body, {
       headers: headers,

@@ -36,6 +36,7 @@ export const getServerSideProps = async (context) => {
       clientToken = clientTokenData.clientToken;
     } else {
       clientToken = cookies.get("client");
+      console.log(`token from cookie: ${clientToken}`);
     }
 
     const estateRes = await fetch(
