@@ -17,38 +17,11 @@ export const getServerSideProps = async (context) => {
 
     let clientToken;
 
-<<<<<<< HEAD
-    if (!cookies.get("client")) {
-      const res = await fetch(`${process.env.API_BASE_URL}/api/token`);
-      const data = await res.json();
-      const token = data.token;
-
-      const clientTokenRes = await fetch(
-        `${process.env.API_BASE_URL}/api/clientToken`,
-        {
-          headers: {
-            token: token,
-          },
-        }
-      );
-      const clientTokenData = await clientTokenRes.json();
-      clientToken = clientTokenData.clientToken;
-      cookies.set("client", clientToken, {
-        sameSite: "strict",
-        secure: process.env.NODE_ENV !== "development",
-        httpOnly: true,
-      });
-    } else {
-      clientToken = cookies.get("client");
-      console.log(`token from cookie: ${clientToken}`);
-    }
-=======
     const clientTokenRes = await fetch(
       `${process.env.API_BASE_URL}/api/clientToken`
     );
     const clientTokenData = await clientTokenRes.json();
     clientToken = clientTokenData.clientToken;
->>>>>>> cookies
 
     const estateRes = await fetch(
       `${process.env.API_BASE_URL}/api/estates/${id}`,
