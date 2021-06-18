@@ -12,7 +12,7 @@ export default function Home({ estates }) {
 }
 
 export const getServerSideProps = async () => {
-  const url = `${process.env.WHISE_BASE_URL}/token`;
+  const url = `https://api.whise.eu/token`;
   const headers = {
     "Content-Type": "application/json",
   };
@@ -27,7 +27,7 @@ export const getServerSideProps = async () => {
     });
 
     if (resp && resp.data && resp.data.token) {
-      const url = `${process.env.WHISE_BASE_URL}/admin/clients/token`;
+      const url = `https://api.whise.eu/v1/admin/clients/token`;
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${resp.data.token}`,
@@ -44,7 +44,7 @@ export const getServerSideProps = async () => {
         if (response && response.data && response.data.token) {
           const clientToken = response.data.token;
 
-          let url = `${process.env.WHISE_BASE_URL}/v1/estates/list`;
+          let url = `https://api.whise.eu/v1/estates/list`;
           let headers = {
             "Content-Type": "application/json",
             Authorization: `Bearer ${clientToken}`,
@@ -69,14 +69,29 @@ export const getServerSideProps = async () => {
               };
             }
           } catch (e) {
-            console.log(e.message);
+            console.log(`Estates error: ${e.message}`);
+            return {
+              props: {
+                estates: [],
+              },
+            };
           }
         }
       } catch (e) {
-        console.log(e.message);
+        console.log(`Client token error: ${e.message}`);
+        return {
+          props: {
+            estates: [],
+          },
+        };
       }
     }
   } catch (e) {
-    console.log(e.message);
+    console.log(`Token error: ${e.message}`);
+    return {
+      props: {
+        estates: [],
+      },
+    };
   }
 };
