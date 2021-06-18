@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "cookies": "^0.8.0",
     "cors": "^2.8.5",
     "next": "10.x",
     "react": "17.x",
