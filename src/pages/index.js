@@ -1,8 +1,9 @@
 import styles from "../styles/Home.module.css";
 import Estates from "../common/components/Estates";
 import Cookies from "cookies";
+import fetchTokens from "../common/util/fetchTokens";
 
-//Master branch
+//Import token calls
 
 export default function Home({ estates, errors }) {
   return (
@@ -14,37 +15,11 @@ export default function Home({ estates, errors }) {
 
 export const getServerSideProps = async ({ req, res }) => {
   try {
-    const cookies = new Cookies(req, res);
-
-    let clientToken;
-
-    if (!cookies.get("client")) {
-      const res = await fetch(`${process.env.API_BASE_URL}/api/token`);
-      const data = await res.json();
-      const token = data.token;
-
-      const clientTokenRes = await fetch(
-        `${process.env.API_BASE_URL}/api/clientToken`,
-        {
-          headers: {
-            token: token,
-          },
-        }
-      );
-      const clientTokenData = await clientTokenRes.json();
-      clientToken = clientTokenData.clientToken;
-
-      cookies.set("client", clientToken, {
-        sameSite: "strict",
-      });
-    } else {
-      clientToken = cookies.get("client");
-      console.log(`token from cookie: ${clientToken}`);
-    }
+    const token = await fetchTokens(req, res);
 
     const estatesRes = await fetch(`${process.env.API_BASE_URL}/api/estates`, {
       headers: {
-        client: clientToken,
+        client: token.clientToken,
       },
     });
 
