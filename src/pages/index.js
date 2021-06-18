@@ -34,6 +34,7 @@ export const getServerSideProps = async () => {
       headers: {
         client: clientToken,
       },
+      method: "POST",
     });
     const estatesData = await estatesRes.json();
     const estates = estatesData.estates;

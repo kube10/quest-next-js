@@ -2,6 +2,7 @@ import axios from "axios";
 
 export default async function handler(req, res) {
   const url = `${process.env.WHISE_BASE_URL}/v1/estates/list`;
+  2;
   const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${req.headers.client}`,
