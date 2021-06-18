@@ -1,12 +1,12 @@
 import Head from "next/head";
 import axios from "axios";
 import styles from "../styles/Home.module.css";
-import TestComponent from "../common/components/TestComponent";
+import Estates from "../common/components/Estates";
 
 export default function Home({ estates, errors }) {
   return (
     <div className={styles.container}>
-      <TestComponent />
+      {!errors ? <Estates estates={estates} /> : "An error occured!"}
     </div>
   );
 }
