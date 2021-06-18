@@ -1,6 +1,5 @@
 import Link from "next/link";
 import styles from "../../../styles/Home.module.css";
-import Cookies from "cookies";
 
 export default function estate({ estate, error }) {
   return (
@@ -14,11 +13,11 @@ export default function estate({ estate, error }) {
 export const getServerSideProps = async (context) => {
   try {
     const { req, res } = context;
-    const cookies = new Cookies(req, res);
     const id = context.params.id;
 
     let clientToken;
 
+<<<<<<< HEAD
     if (!cookies.get("client")) {
       const res = await fetch(`${process.env.API_BASE_URL}/api/token`);
       const data = await res.json();
@@ -43,6 +42,13 @@ export const getServerSideProps = async (context) => {
       clientToken = cookies.get("client");
       console.log(`token from cookie: ${clientToken}`);
     }
+=======
+    const clientTokenRes = await fetch(
+      `${process.env.API_BASE_URL}/api/clientToken`
+    );
+    const clientTokenData = await clientTokenRes.json();
+    clientToken = clientTokenData.clientToken;
+>>>>>>> cookies
 
     const estateRes = await fetch(
       `${process.env.API_BASE_URL}/api/estates/${id}`,
