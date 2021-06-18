@@ -94,7 +94,7 @@ export const getServerSideProps = async () => {
     return {
       props: {
         estates: [],
-        errors: `Token error: ${e.message}`,
+        errors: `Token error: ${e.message} for user ${process.env.WHISE_USER}`,
       },
     };
   }
