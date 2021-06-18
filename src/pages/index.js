@@ -14,90 +14,48 @@ export default function Home({ estates, errors }) {
 }
 
 export const getServerSideProps = async () => {
-  const url = `https://api.whise.eu/token`;
-  const headers = {
-    "Content-Type": "application/json",
+  const res = await fetch("http://localhost:3010/api/token");
+  const data = await res.json();
+  const token = data.token;
+
+  console.log(`token sent: ${token}`);
+
+  const clientTokenRes = await fetch("http://localhost:3010/api/clientToken", {
+    headers: {
+      token: token,
+    },
+  });
+  const clientTokenData = await clientTokenRes.json();
+  const clientToken = data.clientToken;
+
+  return {
+    props: {
+      estates: null,
+      errors: `Estates not fetched with error`,
+    },
   };
-  const body = {
-    username: process.env.WHISE_USER,
-    password: process.env.WHISE_PASS,
-  };
 
-  try {
-    const resp = await axios.post(url, body, {
-      headers: headers,
-    });
-
-    if (resp && resp.data && resp.data.token) {
-      const url = `https://api.whise.eu/v1/admin/clients/token`;
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${resp.data.token}`,
-      };
-      const body = {
-        ClientId: 6980,
-        OfficeId: 9159,
-      };
-      try {
-        const response = await axios.post(url, body, {
-          headers: headers,
-        });
-
-        if (response && response.data && response.data.token) {
-          const clientToken = response.data.token;
-
-          let url = `https://api.whise.eu/v1/estates/list`;
-          let headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${clientToken}`,
-          };
-          let body = {
-            Page: {
-              Limit: 5,
-              Offset: 0,
-            },
-          };
-
-          try {
-            let estatesRes = await axios.post(url, body, {
-              headers: headers,
-            });
-
-            if (estatesRes && estatesRes.data && estatesRes.data.estates) {
-              return {
-                props: {
-                  estates: estatesRes.data.estates,
-                  errors: null,
-                },
-              };
-            }
-          } catch (e) {
-            console.log(`Estates error: ${e.message}`);
-            return {
-              props: {
-                estates: [],
-                errors: `Estates error: ${e.message}`,
-              },
-            };
-          }
-        }
-      } catch (e) {
-        console.log(`Client token error: ${e.message}`);
-        return {
-          props: {
-            estates: [],
-            errors: `Client token error: ${e.message}`,
-          },
-        };
-      }
-    }
-  } catch (e) {
-    console.log(`Token error: ${e.message}`);
-    return {
-      props: {
-        estates: [],
-        errors: `Token error: ${e.message} for user ${process.env.WHISE_USER}`,
-      },
-    };
-  }
+  // try {
+  //   const estates = await fetch("http://localhost:3010/api/estates", {
+  //     headers: {
+  //       clientToken,
+  //     },
+  //   });
+  //
+  //   console.log(estates);
+  //
+  //   return {
+  //     props: {
+  //       estates,
+  //       errors: null,
+  //     },
+  //   };
+  // } catch (err) {
+  //   return {
+  //     props: {
+  //       estates: null,
+  //       errors: `Estates not fetched with error: ${err.message}`,
+  //     },
+  //   };
+  // }
 };
