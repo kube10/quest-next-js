@@ -22,7 +22,7 @@ export const getServerSideProps = async ({ req, res }) => {
 
     const estatesRes = await fetch(`${process.env.API_BASE_URL}/api/estates`, {
       headers: {
-        client: token.clientToken,
+        client: clientToken,
       },
     });
 
