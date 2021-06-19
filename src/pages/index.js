@@ -1,45 +1,44 @@
 import styles from "../styles/Home.module.css";
 import Estates from "../common/components/Estates";
+import { fetchClientToken, fetchAllEstates } from "../common/util/fetchers";
 
-export default function Home({ estates, errors }) {
+export default function Home({ estates, error }) {
   return (
     <div className={styles.container}>
-      {!errors ? <Estates estates={estates} /> : "An error occured!"}
+      {!error ? <Estates estates={estates} /> : <p>{error}</p>}
     </div>
   );
 }
 
 export const getStaticProps = async ({ req, res }) => {
   try {
-    const clientTokenRes = await fetch(
-      `${process.env.API_BASE_URL}/api/clientToken`
-    );
+    const clientToken = await fetchClientToken();
 
-    const clientTokenData = await clientTokenRes.json();
-    const clientToken = clientTokenData.clientToken;
+    let estates, error;
 
-    const estatesRes = await fetch(`${process.env.API_BASE_URL}/api/estates`, {
-      headers: {
-        client: clientToken,
-      },
-    });
-
-    const estatesData = await estatesRes.json();
-    const estates = estatesData.estates;
+    if (clientToken.isValidRequest) {
+      const res = await fetchAllEstates(clientToken.token);
+      estates = res.estates;
+      error = null;
+    } else {
+      estates = [];
+      error = `Not authenticated.`;
+    }
 
     return {
       props: {
         estates: estates,
-        errors: null,
+        error: error,
+        revalidate: 60 * 60,
       },
     };
   } catch (err) {
+    console.log(err.message);
     return {
       props: {
         estates: [],
-        errors: `An error occured: ${err.message}`,
+        error: `An error occured`,
       },
-      revalidate: 60 * 60,
     };
   }
 };

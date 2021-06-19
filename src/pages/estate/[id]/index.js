@@ -1,6 +1,11 @@
 import Link from "next/link";
 import styles from "../../../styles/Home.module.css";
 import { useRouter } from "next/router";
+import {
+  fetchClientToken,
+  fetchAllEstates,
+  fetchEstateById,
+} from "../../../common/util/fetchers";
 
 export default function estate({ estate, error }) {
   const router = useRouter();
@@ -19,65 +24,52 @@ export default function estate({ estate, error }) {
 
 export const getStaticProps = async (context) => {
   try {
-    const { req, res } = context;
-    const id = context.params.id;
+    const clientToken = await fetchClientToken();
 
-    let clientToken;
+    let estate, error;
 
-    const clientTokenRes = await fetch(
-      `${process.env.API_BASE_URL}/api/clientToken`
-    );
-    const clientTokenData = await clientTokenRes.json();
-    clientToken = clientTokenData.clientToken;
+    if (clientToken.isValidRequest) {
+      const res = await fetchEstateById(clientToken.token, context.params.id);
+      estate = res.estates[0];
+      error = null;
+    } else {
+      estate = {};
+      error = "Not authenticated";
+    }
 
-    const estateRes = await fetch(
-      `${process.env.API_BASE_URL}/api/estates/${id}`,
-      {
-        headers: {
-          client: clientToken,
-        },
-      }
-    );
-
-    const estateData = await estateRes.json();
-    const estate = estateData.estates;
     return {
       props: {
-        error: null,
-        estate: estate[0],
+        estate,
+        error,
+        revalidate: 60 * 60,
       },
     };
   } catch (err) {
+    console.log(err.message);
     return {
       props: {
-        error: `Error occured: ${err.message}`,
         estate: {},
+        error: "An error occured.",
       },
-      revalidate: 60 * 60,
     };
   }
 };
 
 export const getStaticPaths = async () => {
-  const clientTokenRes = await fetch(
-    `${process.env.API_BASE_URL}/api/clientToken`
-  );
+  const clientToken = await fetchClientToken();
 
-  const clientTokenData = await clientTokenRes.json();
-  const clientToken = clientTokenData.clientToken;
+  let paths;
 
-  const estatesRes = await fetch(`${process.env.API_BASE_URL}/api/estates`, {
-    headers: {
-      client: clientToken,
-    },
-  });
+  if (clientToken.isValidRequest) {
+    const res = await fetchAllEstates(clientToken.token);
 
-  const estatesData = await estatesRes.json();
-  const estates = estatesData.estates;
+    const ids = res.estates.map((estate) => estate.id);
 
-  const ids = estates.map((estate) => estate.id);
-
-  const paths = ids.map((id) => ({ params: { id: id.toString() } }));
+    paths = ids.map((id) => ({ params: { id: id.toString() } }));
+  } else {
+    paths = [];
+    console.log("clientToken not valid.");
+  }
 
   return {
     paths,
