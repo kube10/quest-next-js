@@ -1,8 +1,6 @@
 import styles from "../styles/Home.module.css";
 import Estates from "../common/components/Estates";
 
-//Import token calls
-
 export default function Home({ estates, errors }) {
   return (
     <div className={styles.container}>
@@ -11,7 +9,7 @@ export default function Home({ estates, errors }) {
   );
 }
 
-export const getServerSideProps = async ({ req, res }) => {
+export const getStaticProps = async ({ req, res }) => {
   try {
     const clientTokenRes = await fetch(
       `${process.env.API_BASE_URL}/api/clientToken`
@@ -41,6 +39,7 @@ export const getServerSideProps = async ({ req, res }) => {
         estates: [],
         errors: `An error occured: ${err.message}`,
       },
+      revalidate: 60 * 60,
     };
   }
 };
