@@ -7,7 +7,8 @@ const Estates = ({ estates }) => {
         <p key={estate.id}>
           <Link href="/estate/[id]" as={`/estate/${estate.id}`}>
             {estate.address}
-          </Link>
+          </Link>{" "}
+          {estate.number}
         </p>
       ))}
     </div>
