@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ContactForm from "../../../common/components/ContactForm";
 import styles from "../../../styles/Home.module.css";
 import { useRouter } from "next/router";
 import {
@@ -17,6 +18,7 @@ export default function estate({ estate, error }) {
   return (
     <div className={styles.container}>
       {!error ? <p>{estate.address}</p> : <p>{estate.error}</p>}
+      <ContactForm estate={estate} />
       <Link href="/">Back</Link>
     </div>
   );

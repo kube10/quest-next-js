@@ -9,6 +9,12 @@ const Estates = ({ estates }) => {
             {estate.address}
           </Link>{" "}
           {estate.number}
+          <br />
+          {estate.purpose.id === 1
+            ? "Te koop"
+            : estate.purpose.id === 2
+            ? "Te huur"
+            : "Life anuity sale"}
         </p>
       ))}
     </div>
