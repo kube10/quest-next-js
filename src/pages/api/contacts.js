@@ -23,7 +23,7 @@ export default async (req, res) => {
 
       console.log(whiseResData);
 
-      res.status(300).json({ contactId: whiseResData });
+      res.status(200).json({ contactId: whiseResData });
     } else {
       res.status(403).json({ message: "Access forbidden." });
     }
